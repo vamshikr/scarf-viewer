@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}SWAMP Viewer{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/1.0.0/css/dataTables.responsive.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='downloads/prism.css') }}"/>
+
+<style>
+  table th:nth-child(4), td:nth-child(4),
+  th:nth-child(5), td:nth-child(5),
+  th:nth-child(6), td:nth-child(6),
+  th:nth-child(7), td:nth-child(7),
+  th:nth-child(10), td:nth-child(10),
+  th:nth-child(11), td:nth-child(11) {
+  display: none;
+  }
+  
+  table {
+  margin : 0%;
+  padding : 0%;
+  }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="row" style="background-color: #e6f5ff; margin-left: 1%; margin-right: 1%; padding: 0px;">
+  <div id="bug_info" class="alert" style="margin: 0%; margin-bottom: 1px;" role="alert">
+	<p> </p>
+  </div>
+</div>
+<div class="row" style="background-color: #e6f5ff; margin-left: 1%; margin-right: 1%; padding: 0px;">
+
+  <div class="col-md-6 panel panel-info" style="padding: 0px; ">
+	<div class="panel-heading"><strong>Bug List: </strong></div>
+	<div class="panel-body" style="height: 800px; padding-top: 0px; padding-bottom: 0px; overflow-x: scroll; overflow-y: scroll;">
+
+	  <table class="table table-hover" data-report-id="{{report_id}}" id="bug_report">
+        <thead>
+          <tr>
+            <th> # </th>
+            <th> BugCode </th>
+            <th> CWEID </th>
+			<th> BugMessage </th>
+            <th> BugGroup </th>
+            <th> BugSeverity </th>
+            <th> BugRank </th>
+            <th> Method </th>
+            <th> Lines </th>
+            <th> StartLine </th>
+            <th> EndLine </th>
+            <th> SourceFile  </th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+	</div>
+  </div>
+
+
+  <div class="col-md-6 panel panel-info" style="padding: 0px;">
+	<!-- Default panel contents -->
+	<div class="panel-heading" id="source_code"><strong>Source File: </strong></div>
+	<div class="highlight panel-body" style="height: 800px; overflow-x: scroll; overflow-y: scroll; padding: 0%;">
+	  <pre id="source_code" class="line-numbers language-java" data-line="19-24"><code></code>
+	  </pre>
+	</div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/1.0.0/js/dataTables.responsive.js"></script>
+<script src="{{ url_for('static', filename='results.js') }}"> </script>
+<script src="{{ url_for('static', filename='downloads/prism.js') }}" data-manual> </script>
+
+{% endblock %}

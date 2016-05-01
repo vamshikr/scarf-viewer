@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+{{ super() }}
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"> -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/1.0.0/css/dataTables.responsive.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+<style>
+table th:nth-child(2), td:nth-child(2),
+  th:nth-child(3), td:nth-child(3),
+  th:nth-child(6), td:nth-child(6),
+  th:nth-child(7), td:nth-child(7) {
+  display: none;
+  }
+  
+  table {
+  margin : 0%;
+  padding : 0%;
+  }
+</style>
+
+{% endblock %}
+
+{% block page_content %}
+<div class="container">
+  <div class="panel panel-default">
+	<div class="panel-body">
+	  <table class="table  table-responsive table-hover table-condensed" id="assessments">
+		<thead>
+		  <tr>
+			<th> # </th>
+			<th> Package Short Name </th>
+			<th> Package Version </th>
+			<th> Package </th>
+			<th> Platform </th>
+			<th> Tool Type </th>
+			<th> Tool Version </th>
+			<th> Tool </th>
+			<th> Date </th>
+		  </tr>
+		</thead>
+		<tbody>
+		</tbody>
+	  </table>
+	</div>
+  </div>
+
+  <form action="results" method="post" id="hidden-form"  hidden>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jq-2.2.0,dt-1.10.11/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="{{ url_for('static', filename='index.js') }}"> </script>
+
+{% endblock %}
+
