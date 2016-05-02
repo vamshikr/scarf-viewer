@@ -1,4 +1,4 @@
-# SCARF Results Viewer
+# SCARF Viewer
 
 Folks who work for the SWAMP project have come up with a normalized results format to which reports from various static analysis tools are converted into. It is called SWAMP Common Assessment Results Format (SCARF).
 
