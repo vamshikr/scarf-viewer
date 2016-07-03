@@ -1,5 +1,4 @@
 import os
-from datetime import datetime, timedelta, timezone
 
 
 class Config:
@@ -17,9 +16,12 @@ class DevelopmentConfig(Config):
     try:
         SECRET_KEY = os.environ['SECRET_KEY']
     except KeyError as err: 
-        print('''Please have an shell environment variable by the name "SECRET_KEY". Flask-WTF module uses this SECRET_KEY to generate encrypted tokens that are used to verify the authenticity of requests with "HTML form data"''')
+        print('''Please have an shell environment variable by the name "SECRET_KEY". 
+        Flask-WTF module uses this SECRET_KEY to generate encrypted tokens that 
+        are used to verify the authenticity of requests with "HTML form data"''')
         raise err
 
+    
 class TestingConfig(Config):
     TESTING = True
 
@@ -32,6 +34,5 @@ config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-
     'default': DevelopmentConfig
 }
