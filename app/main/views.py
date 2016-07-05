@@ -1,23 +1,20 @@
+import datetime
 import os
 import os.path as osp
-import shutil
 import uuid
-import datetime
 
-from flask import redirect, url_for, render_template, request, abort
-from flask import current_app, session, jsonify, make_response
+import db_util
+from bson.objectid import ObjectId
+from flask import jsonify, make_response
+from flask import render_template, request, abort
 from flask.ext.wtf import Form
-from flask.ext.wtf.file import FileAllowed, FileRequired,  FileField
+from flask.ext.wtf.file import FileAllowed, FileRequired, FileField
+from manage import app
+from werkzeug import secure_filename
 from wtforms import SubmitField, TextField
 from wtforms.validators import Required
-from werkzeug import secure_filename
-
-from bson.objectid import ObjectId
-
 from . import main
 from .. import mongo
-from manage import app
-import db_util
 
 
 @main.route('/')
@@ -31,38 +28,38 @@ def get_aruns():
     This method, returns a json object with information about the
     assessment results in the database
     '''
-    
+
     form_data = dict(request.form)
     coll = mongo.db['assessment_results']
     cursur = coll.find({}, {'tool-version': 1, 'platform': 1,
                             'package-version': 1, 'tool-type': 1,
                             'package-short-name': 1,
-                            'assessment-date':1 })
+                            'assessment-date': 1})
 
     start = int(form_data['start'][0])
     length = int(form_data['length'][0])
     total = cursur.count()
-    end =  total if start+length > total else start+length    
+    end = total if start + length > total else start + length
 
     data = list()
 
-    count = start+1
+    count = start + 1
     for arun in cursur[start:end]:
         data.append([count,
                      arun['package-short-name'],
                      arun['package-version'],
-                    '%s-%s' % (arun['package-short-name'], arun['package-version']), 
+                     '%s-%s' % (arun['package-short-name'], arun['package-version']),
                      arun['platform'],
                      arun['tool-type'],
                      arun['tool-version'],
-                    '%s-%s' % (arun['tool-type'], arun['tool-version']),
+                     '%s-%s' % (arun['tool-type'], arun['tool-version']),
                      arun['assessment-date']])
         count += 1
 
-    return jsonify({ 'draw' : int(form_data['draw'][0]) ,
-                     'recordsTotal' : total,
-                     'recordsFiltered' : total,
-                     'data' : data })
+    return jsonify({'draw': int(form_data['draw'][0]),
+                    'recordsTotal': total,
+                    'recordsFiltered': total,
+                    'data': data})
 
 
 @main.route('/results', methods=['POST'])
@@ -75,14 +72,14 @@ def view_results():
     '''
 
     form_data = dict(request.form)
-    
+
     coll = mongo.db['assessment_results']
-    cursur = coll.find_one({'tool-type' : form_data['tool_type'][0],
-                            'tool-version' : form_data['tool_version'][0],
-                            'platform' : form_data['platform'][0],
-                            'package-short-name' : form_data['package_short_name'][0],
-                            'package-version' : form_data['package_version'][0]},
-                           {'_id' : 1})
+    cursur = coll.find_one({'tool-type': form_data['tool_type'][0],
+                            'tool-version': form_data['tool_version'][0],
+                            'platform': form_data['platform'][0],
+                            'package-short-name': form_data['package_short_name'][0],
+                            'package-version': form_data['package_version'][0]},
+                           {'_id': 1})
 
     return render_template('results.html', report_id=str(cursur['_id']))
 
@@ -91,39 +88,39 @@ def view_results():
 def get_report():
     '''The datatable in the UI calls this route with required results
     bug ids start and end numbers'''
-    
+
     form_data = dict(request.form)
     start = int(form_data['start'][0])
     length = int(form_data['length'][0])
-    
+
     coll = mongo.db['assessment_results']
-    cursur = coll.find_one({'_id' : ObjectId(form_data['report_id'][0])})
+    cursur = coll.find_one({'_id': ObjectId(form_data['report_id'][0])})
 
     data = list()
 
     total = len(cursur['BugInstances'])
-    end =  total if start+length > total else start+length
-    
-    for bug in cursur['BugInstances'][start:end]:
-        data.append([ bug['id'],
-                      bug.get('BugCode', '-'),
-                      bug.get('CWEID', '-'),
-                      bug.get('BugMessage', '-'),
-                      bug.get('BugGroup', '-'),
-                      bug.get('BugSeverity', '-'),
-                      bug.get('BugRank', '-'),
-                      bug['Methods'][0]['name'] if len(bug['Methods']) > 0 else "-",
-                      '%s-%s' % (bug['BugLocations'][0].get('StartLine', ''), \
-                                 bug['BugLocations'][0].get('EndLine', ''),),
-                      bug['BugLocations'][0].get('StartLine', ''),
-                      bug['BugLocations'][0].get('EndLine', ''),
-                      bug['BugLocations'][0].get('SourceFile', '')
-                  ])
+    end = total if start + length > total else start + length
 
-    return jsonify({ 'draw' : int(form_data['draw'][0]) ,
-                     'recordsTotal' : total,
-                     'recordsFiltered' : total,
-                     'data' : data })
+    for bug in cursur['BugInstances'][start:end]:
+        data.append([bug['id'],
+                     bug.get('BugCode', '-'),
+                     bug.get('CWEID', '-'),
+                     bug.get('BugMessage', '-'),
+                     bug.get('BugGroup', '-'),
+                     bug.get('BugSeverity', '-'),
+                     bug.get('BugRank', '-'),
+                     bug['Methods'][0]['name'] if len(bug['Methods']) > 0 else "-",
+                     '%s-%s' % (bug['BugLocations'][0].get('StartLine', ''),
+                                bug['BugLocations'][0].get('EndLine', ''),),
+                     bug['BugLocations'][0].get('StartLine', ''),
+                     bug['BugLocations'][0].get('EndLine', ''),
+                     bug['BugLocations'][0].get('SourceFile', '')
+                     ])
+
+    return jsonify({'draw': int(form_data['draw'][0]),
+                    'recordsTotal': total,
+                    'recordsFiltered': total,
+                    'data': data})
 
 
 @main.route('/sourcefile')
@@ -133,14 +130,14 @@ def get_source_file():
 
     filepath = request.args.get('filepath')
 
-    #source_mapping = dict()
-    #for cur in mongo.db['source_mapping'].find({}):
+    # source_mapping = dict()
+    # for cur in mongo.db['source_mapping'].find({}):
     #    source_mapping.update(cur)
 
-    source_mapping = mongo.db['source_mapping'].find_one({'file_path' : filepath})
+    source_mapping = mongo.db['source_mapping'].find_one({'file_path': filepath})
     if source_mapping:
         coll = mongo.db['source_files']
-        cursur = coll.find_one({ 'sha1_digest' : source_mapping['sha1_digest']})
+        cursur = coll.find_one({'sha1_digest': source_mapping['sha1_digest']})
         return make_response(cursur['file_content'])
 
 
@@ -157,7 +154,7 @@ class UploadForm(Form):
     pkg_short_name = TextField('Package short name', validators=[Required()])
     pkg_version = TextField('Package version', validators=[Required()])
     platform = TextField('Platform', validators=[Required()])
-    
+
     submit = SubmitField('Submit')
 
 
@@ -180,14 +177,13 @@ def upload():
                                         secure_filename(pkg_src_archive.filename))
         pkg_src_archive.save(pkg_src_archive_file)
 
-        
         try:
             _id = db_util.store_in_db(parsed_results_file,
                                       pkg_src_archive_file,
-                                      {'package-short-name' : form.pkg_short_name.data,
-                                       'package-version' : form.pkg_version.data,
-                                       'platform' : form.platform.data,
-                                       'assessment-date' : datetime.datetime.today()})
+                                      {'package-short-name': form.pkg_short_name.data,
+                                       'package-version': form.pkg_version.data,
+                                       'platform': form.platform.data,
+                                       'assessment-date': datetime.datetime.today()})
             return render_template('results.html', report_id=_id)
 
         except Exception as err:

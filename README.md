@@ -16,10 +16,10 @@ The primary programming languages used in this application are **Python 3** and 
 ### Getting Started
 
 #### Creating Database.
-A sample set of results are provided as MongoDB dump [here](https://www.cs.wisc.edu/~vamshi/swamp_test_db.dump). If you have a MongoDB server running, run the following command to create the database with the sample set of results.
+A sample set of results are provided as MongoDB dump [here](https://www.cs.wisc.edu/~vamshi/scarf_test_db.dump). If you have a MongoDB server running, run the following command to create the database with the sample set of results.
 
 ```sh
-% mongorestore --archive=swamp_test_db.dump
+% mongorestore --archive=scarf_test_db.dump
 ```
 
 If you need instructions on how to run an instance of MongoDB server, please see [Getting Started with MongoDB](https://docs.mongodb.org/getting-started/shell/)
@@ -51,7 +51,7 @@ Open a web browser window and go to http://127.0.0.1:5000/
 
 
 ### Sample database set.
-A sample set of [results] (https://www.cs.wisc.edu/~vamshi/swamp_test_db.dump) contain the following results:
+A sample set of [results] (https://www.cs.wisc.edu/~vamshi/scarf_test_db.dump) contain the following results:
 
 | Package | Platform | Tool |
 | --- | --- | --- |
