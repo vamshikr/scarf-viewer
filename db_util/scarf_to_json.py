@@ -1,10 +1,7 @@
-import sys
-import xml.etree.ElementTree as xet
 import json
 import os.path as osp
-from collections import namedtuple
-from collections import defaultdict
-import csv
+import sys
+import xml.etree.ElementTree as xet
 
 
 def scarf_to_json(xml_filepath, extra_attr):
@@ -17,8 +14,8 @@ def scarf_to_json(xml_filepath, extra_attr):
     tool_ver = root.attrib['tool_version']
     
     json_dict = dict()
-    json_dict.update({'tool-type' : tool_type,
-                      'tool-version' :  tool_ver})
+    json_dict.update({'tool-type': tool_type,
+                      'tool-version': tool_ver})
     json_dict.update(extra_attr)
     bug_instances = []
 
@@ -26,8 +23,8 @@ def scarf_to_json(xml_filepath, extra_attr):
     source_files = set()
     
     for bug in root.iter('BugInstance'):
-        bug_dict = {'id' : int(bug.get('id'))}
-        #print(bug_dict, flush=True)
+        bug_dict = {'id': int(bug.get('id'))}
+        # print(bug_dict, flush=True)
         
         if bug.find('ClassName') is not None:
             bug_dict['ClassName'] = bug.find('ClassName').text
@@ -79,6 +76,7 @@ def scarf_to_json(xml_filepath, extra_attr):
 
     return (json_dict, source_files)
 
+
 def scarf_to_json_file(xml_filepath, extra_attr, json_filepath=None):
 
     if json_filepath is None:
@@ -97,7 +95,10 @@ def scarf_to_json_file(xml_filepath, extra_attr, json_filepath=None):
         
 
 def main(args):
-    scarf_to_json_file(args[1], {}, args[2])
+    scarf_to_json_file(args[1], {'package-short-name': 'hadoop',
+                                 'package-version': '1.1.2',
+                                 'platform': 'rhel-6.4-64',
+                                 'assessment-date': 'Sun Apr 10 23:18:08 CDT 2016'})
 
 if __name__ == '__main__':
-	main(sys.argv)
+    main(sys.argv)
