@@ -30,8 +30,8 @@ If you need instructions on how to run an instance of MongoDB server, please see
 After uploading the sample results into MongoDB, run the following commands
 
 ```sh
-% git clone git@bitbucket.org:vamshi_kr/viewer-v2.git
-% cd viewer-v2
+% git clone https://github.com/vamshikr/scarf-viewer.git
+% cd scarf-viewer
 % pyvenv venv  # Create python virtual environment
 % source venv/bin/activate  # Activate the virtual environment
 % pip install --upgrade pip  # Upgrade PIP (Optional)
